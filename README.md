@@ -3,7 +3,7 @@
 An AI-powered tool for field rock identification using deep learning.
 
 ## 🎯 Try it Live
-**Coming Soon!** ← ([[You'll add link after deployment](https://bit.ly/rock-prediction-app)](https://bit.ly/rock-prediction-app))
+**Coming Soon!** ← (https://bit.ly/rock-prediction-app))
 
 ## 📊 Project Overview
 - **Model:** ConvNeXt-Tiny CNN with hierarchical classification
