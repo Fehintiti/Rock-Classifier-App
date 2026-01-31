@@ -40,7 +40,7 @@ An AI-powered tool for field rock identification using deep learning.
 This is a personal research project demonstrating AI applications in geology. Not intended for professional geological identification. Always confirm predictions with field tests.
 
 ## 🙋‍♂️ About
-Built by [Your Name] - Data Geoscientist
+Built by [Tomisin Okunlols] - Data Geoscientist
 
 ## 📄 License
 MIT License - Feel free to use for educational purposes
