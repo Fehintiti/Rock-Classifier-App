@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/rock-classifier-app/static/css/main.89ebb425.css",
-    "main.js": "/rock-classifier-app/static/js/main.d8072872.js",
-    "static/js/453.825386d9.chunk.js": "/rock-classifier-app/static/js/453.825386d9.chunk.js",
-    "index.html": "/rock-classifier-app/index.html",
-    "main.89ebb425.css.map": "/rock-classifier-app/static/css/main.89ebb425.css.map",
-    "main.d8072872.js.map": "/rock-classifier-app/static/js/main.d8072872.js.map",
-    "453.825386d9.chunk.js.map": "/rock-classifier-app/static/js/453.825386d9.chunk.js.map"
+    "main.css": "/Rock-Classifier-App/static/css/main.89ebb425.css",
+    "main.js": "/Rock-Classifier-App/static/js/main.e858ec06.js",
+    "static/js/453.825386d9.chunk.js": "/Rock-Classifier-App/static/js/453.825386d9.chunk.js",
+    "index.html": "/Rock-Classifier-App/index.html",
+    "main.89ebb425.css.map": "/Rock-Classifier-App/static/css/main.89ebb425.css.map",
+    "main.e858ec06.js.map": "/Rock-Classifier-App/static/js/main.e858ec06.js.map",
+    "453.825386d9.chunk.js.map": "/Rock-Classifier-App/static/js/453.825386d9.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.89ebb425.css",
-    "static/js/main.d8072872.js"
+    "static/js/main.e858ec06.js"
   ]
 }
