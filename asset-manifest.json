@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/rock-classifier-app/static/css/main.89ebb425.css",
+    "main.js": "/rock-classifier-app/static/js/main.d8072872.js",
+    "static/js/453.825386d9.chunk.js": "/rock-classifier-app/static/js/453.825386d9.chunk.js",
+    "index.html": "/rock-classifier-app/index.html",
+    "main.89ebb425.css.map": "/rock-classifier-app/static/css/main.89ebb425.css.map",
+    "main.d8072872.js.map": "/rock-classifier-app/static/js/main.d8072872.js.map",
+    "453.825386d9.chunk.js.map": "/rock-classifier-app/static/js/453.825386d9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.89ebb425.css",
+    "static/js/main.d8072872.js"
+  ]
+}
