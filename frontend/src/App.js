@@ -11,6 +11,7 @@ function App() {
   const [correctRockGroup, setCorrectRockGroup] = useState('');
   const [actualRock, setActualRock] = useState('');
   const [customRock, setCustomRock] = useState('');
+  const [certainty, setCertainty] = useState('');
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
@@ -37,58 +38,75 @@ function App() {
     e.preventDefault();
   };
 
+  const handleUploadClick = (e) => {
+    e.preventDefault();
+    document.getElementById('fileInput').click();
+  };
+
   const classifyRock = async () => {
     if (!selectedFile) return;
 
     setLoading(true);
-    const formData = new FormData();
-    formData.append('file', selectedFile);
 
     try {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      // TEMPORARY: Use localhost for testing
+      // After AWS deployment, change to: https://YOUR-AWS-URL/predict
       const response = await fetch('http://localhost:8000/predict', {
         method: 'POST',
         body: formData,
       });
 
+      if (!response.ok) {
+        throw new Error('Classification failed');
+      }
+
       const data = await response.json();
       setResult(data);
+
     } catch (error) {
       console.error('Error:', error);
-      alert('Error classifying rock. Make sure backend is running!');
+      alert('Error classifying rock. Make sure the backend is running on http://localhost:8000');
     } finally {
       setLoading(false);
     }
   };
 
   const submitFeedback = async () => {
-    if (!selectedFile || !result) return;
-
-    const formData = new FormData();
-    formData.append('file', selectedFile);
-    formData.append('predicted_l1', result.l1_class);
-    formData.append('predicted_l2', result.l2_predictions[0].rock_type);
-    formData.append('l1_confidence', result.l1_confidence);
-    formData.append('l2_confidence', result.l2_predictions[0].confidence);
-    formData.append('is_correct', isCorrect === 'yes' ? 'true' : 'false');
-    
-    const finalRock = actualRock === 'other' ? customRock : (isCorrect === 'yes' ? result.l2_predictions[0].rock_type : actualRock);
-    formData.append('actual_rock', finalRock);
-    formData.append('correct_rock_group', isCorrect === 'no' ? correctRockGroup : result.l1_class);
-
     try {
-      await fetch('http://localhost:8000/feedback', {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      formData.append('model_prediction_type', result?.l1_class || '');
+      formData.append('model_prediction_name', result?.l2_predictions[0]?.rock_type || '');
+      formData.append('user_correction_type', correctRockGroup);
+      formData.append('user_correction_name', actualRock === 'other' ? customRock : actualRock);
+      formData.append('certainty', certainty);
+
+      // TEMPORARY: Use localhost for testing
+      // After AWS deployment, change to: https://YOUR-AWS-URL/feedback
+      const response = await fetch('http://localhost:8000/feedback', {
         method: 'POST',
         body: formData,
       });
+
+      if (!response.ok) {
+        throw new Error('Feedback submission failed');
+      }
+
+      const data = await response.json();
+      console.log('Feedback saved:', data);
       setFeedbackSubmitted(true);
+
     } catch (error) {
       console.error('Error submitting feedback:', error);
-      alert('Error submitting feedback!');
+      alert('Error submitting feedback. Make sure the backend is running!');
     }
   };
 
   const commonRockTypes = [
-    'Granite', 'Basalt', 'Limestone', 'Sandstone', 'Marble', 
+    'Granite', 'Basalt', 'Limestone', 'Sandstone', 'Marble',
     'Slate', 'Quartzite', 'Gneiss', 'Schist', 'Shale',
     'Diorite', 'Gabbro', 'Andesite', 'Rhyolite', 'Pumice',
     'Obsidian', 'Dolomite', 'Conglomerate', 'Breccia', 'Siltstone',
@@ -112,10 +130,6 @@ function App() {
         <p>Upload a rock image and get instant AI-powered classification</p>
         <div className="stats">
           <div className="stat-badge">
-            <div className="stat-number">76%</div>
-            <div className="stat-label">Accuracy</div>
-          </div>
-          <div className="stat-badge">
             <div className="stat-number">2,734</div>
             <div className="stat-label">Training Images</div>
           </div>
@@ -130,10 +144,10 @@ function App() {
         <div className="disclaimer-content">
           <strong>⚠️ Research & Educational Project</strong>
           <p>
-            This is a personal research project exploring AI applications in geological classification. 
+            This is a personal research project exploring AI applications in geological classification.
             Built to demonstrate how deep learning can assist field geologists with preliminary rock identification.
-            <br/><br/>
-            <strong>Not for professional use:</strong> This is a decision support tool, not a replacement for expert identification. 
+            <br /><br />
+            <strong>Not for professional use:</strong> This is a decision support tool, not a replacement for expert identification.
             Always confirm predictions with field tests (hardness, acid reaction, hand lens examination).
           </p>
         </div>
@@ -141,8 +155,8 @@ function App() {
 
       <div className="container">
         <h2>Upload Your Rock Image</h2>
-        
-        <div 
+
+        <div
           className="upload-area"
           onDrop={handleDrop}
           onDragOver={handleDragOver}
@@ -168,9 +182,9 @@ function App() {
               onChange={handleFileSelect}
               style={{ display: 'none' }}
             />
-            <button 
-              className="classify-btn" 
-              onClick={() => document.getElementById('fileInput').click()}
+            <button
+              className="classify-btn"
+              onClick={handleUploadClick}
               type="button"
             >
               Choose File
@@ -187,11 +201,11 @@ function App() {
         {result && (
           <div className="results">
             <h2>Classification Results</h2>
-            
+
             <div className="result-cards">
               <div className="result-card">
                 <div className="card-label">Rock Group</div>
-                <div className="rock-type">{result.l1_class.toUpperCase()}</div>
+                <div className="rock-type">{result.l1_class?.toUpperCase() || 'PROCESSING'}</div>
                 <div className="card-label">Confidence</div>
                 <div className={`confidence ${result.l1_confidence >= 0.7 ? 'high' : result.l1_confidence >= 0.5 ? 'medium' : 'low'}`}>
                   {result.l1_confidence >= 0.7 ? '✅' : result.l1_confidence >= 0.5 ? '⚠️' : '❌'} {(result.l1_confidence * 100).toFixed(1)}%
@@ -203,44 +217,44 @@ function App() {
 
               <div className="result-card">
                 <div className="card-label">Specific Rock Type (Top 3)</div>
-                {result.l2_predictions.map((pred, idx) => (
+                {result.l2_predictions?.map((pred, idx) => (
                   <div key={idx} className={`prediction-item ${idx === 0 ? 'primary' : ''}`}>
                     <div className="prediction-name">
                       {idx + 1}. {pred.rock_type.charAt(0).toUpperCase() + pred.rock_type.slice(1)}
                     </div>
                     <div className="progress-bar">
-                      <div 
+                      <div
                         className={`progress-fill ${idx === 0 ? 'primary' : 'secondary'}`}
                         style={{ width: `${pred.confidence * 100}%` }}
                       ></div>
                     </div>
                     <div className="prediction-confidence">{(pred.confidence * 100).toFixed(1)}% confidence</div>
                   </div>
-                ))}
+                )) || <p>Processing results...</p>}
               </div>
             </div>
 
             <div className="feedback-section">
               <h3>Help Improve the Model</h3>
               <p>Your feedback helps make the classifier better for everyone.</p>
-              
+
               <div className="feedback-form">
                 <div className="feedback-question">
                   <label>Was the prediction correct?</label>
                   <div className="radio-group">
                     <label className="radio-label">
-                      <input 
-                        type="radio" 
-                        value="yes" 
+                      <input
+                        type="radio"
+                        value="yes"
                         checked={isCorrect === 'yes'}
                         onChange={(e) => setIsCorrect(e.target.value)}
                       />
                       Yes, correct
                     </label>
                     <label className="radio-label">
-                      <input 
-                        type="radio" 
-                        value="no" 
+                      <input
+                        type="radio"
+                        value="no"
                         checked={isCorrect === 'no'}
                         onChange={(e) => setIsCorrect(e.target.value)}
                       />
@@ -253,7 +267,7 @@ function App() {
                   <>
                     <div className="feedback-question">
                       <label>What's the correct rock group?</label>
-                      <select 
+                      <select
                         value={correctRockGroup}
                         onChange={(e) => setCorrectRockGroup(e.target.value)}
                         className="rock-select"
@@ -267,7 +281,7 @@ function App() {
 
                     <div className="feedback-question">
                       <label>What's the actual rock type?</label>
-                      <select 
+                      <select
                         value={actualRock}
                         onChange={(e) => {
                           setActualRock(e.target.value);
@@ -281,7 +295,7 @@ function App() {
                         ))}
                         <option value="other">Other (type below)</option>
                       </select>
-                      
+
                       {actualRock === 'other' && (
                         <input
                           type="text"
@@ -292,13 +306,48 @@ function App() {
                         />
                       )}
                     </div>
+                    <div className="feedback-question">
+                      <label>How certain are you about this correction?</label>
+                      <div className="radio-group">
+                        <label className="radio-label">
+                          <input
+                            type="radio"
+                            name="certainty"
+                            value="very_certain"
+                            checked={certainty === 'very_certain'}
+                            onChange={(e) => setCertainty(e.target.value)}
+                          />
+                          Very certain (I'm confident/expert)
+                        </label>
+                        <label className="radio-label">
+                          <input
+                            type="radio"
+                            name="certainty"
+                            value="somewhat_certain"
+                            checked={certainty === 'somewhat_certain'}
+                            onChange={(e) => setCertainty(e.target.value)}
+                          />
+                          Somewhat certain (I think this is right)
+                        </label>
+                        <label className="radio-label">
+                          <input
+                            type="radio"
+                            name="certainty"
+                            value="not_sure"
+                            checked={certainty === 'not_sure'}
+                            onChange={(e) => setCertainty(e.target.value)}
+                          />
+                          Not sure (Just guessing)
+                        </label>
+                      </div>
+                    </div>
                   </>
                 )}
 
-                <button 
-                  className="submit-feedback-btn" 
+                <button
+                  className="submit-feedback-btn"
                   onClick={submitFeedback}
-                  disabled={feedbackSubmitted || (isCorrect === 'no' && (!correctRockGroup || !actualRock)) || (actualRock === 'other' && !customRock)}
+                  disabled={feedbackSubmitted || (isCorrect === 'no' && (!correctRockGroup || !actualRock || !certainty)) || (actualRock === 'other' && !customRock)}
                 >
                   {feedbackSubmitted ? '✓ Feedback Submitted' : 'Submit Feedback'}
                 </button>

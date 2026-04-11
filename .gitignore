@@ -1,0 +1,11 @@
+# Large model files
+*.pth
+model_cleaned_best.pth
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Other
+huggingface_deploy/
+config.json

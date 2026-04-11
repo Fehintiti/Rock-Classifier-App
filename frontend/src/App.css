@@ -351,7 +351,7 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.feedback-section > p {
+.feedback-section>p {
   color: #6B5D52;
   margin-bottom: 1.5rem;
 }
@@ -428,6 +428,27 @@ body {
   cursor: not-allowed;
 }
 
+/* Custom rock input */
+.custom-rock-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #E8E4DF;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #3E2C24;
+  background: white;
+  margin-top: 0.5rem;
+}
+
+.custom-rock-input:focus {
+  outline: none;
+  border-color: #C97C5D;
+}
+
+.custom-rock-input::placeholder {
+  color: #9B8E82;
+}
+
 /* Footer */
 .footer {
   background: #3E2C24;
@@ -462,4 +483,109 @@ body {
 
 .footer-links span {
   color: #6B5D52;
+}
+
+/* ============================================ */
+/* MOBILE OPTIMIZATIONS */
+/* ============================================ */
+
+@media (max-width: 768px) {
+
+  /* Navbar - stack or improve spacing */
+  .nav-links {
+    gap: 1rem;
+    font-size: 0.9rem;
+  }
+
+  /* Hero title - slightly smaller on mobile */
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  /* Stats - stack on very small screens */
+  .stats {
+    gap: 1.5rem;
+  }
+
+  .stat-badge {
+    min-width: 120px;
+  }
+
+  /* Container - less padding on mobile */
+  .container {
+    padding: 0 1rem;
+  }
+
+  /* Upload area - less padding */
+  .upload-area {
+    padding: 2rem 1rem;
+  }
+
+  /* Buttons - bigger tap targets */
+  .classify-btn {
+    padding: 1.25rem 3rem;
+    font-size: 1.1rem;
+    width: 100%;
+  }
+
+  /* Radio buttons - bigger and more spacing */
+  .radio-group {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .radio-label input[type="radio"] {
+    width: 20px;
+    height: 20px;
+  }
+
+  .radio-label {
+    font-size: 1rem;
+    padding: 0.5rem 0;
+  }
+
+  /* Submit feedback button - full width */
+  .submit-feedback-btn {
+    width: 100%;
+    padding: 1rem 2rem;
+  }
+
+  /* Footer - better spacing */
+  .footer {
+    padding: 1.5rem 1rem;
+  }
+
+  .footer p {
+    font-size: 0.9rem;
+  }
+
+  .footer-links {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .footer-links span {
+    display: none;
+  }
+}
+
+/* Extra small phones (iPhone SE, etc.) */
+@media (max-width: 400px) {
+  .hero h1 {
+    font-size: 1.75rem;
+  }
+
+  /* Stack stats vertically on tiny screens */
+  .stats {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stat-badge {
+    width: 200px;
+  }
 }

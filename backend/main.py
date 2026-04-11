@@ -57,8 +57,11 @@ class HierarchicalModel(nn.Module):
         l2_logits = self.l2_head(features)
         return l1_logits, l2_logits
 
-model_path = "../model_cleaned_best.pth"
-info_path = "../deployment_info.json"
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(BASE_DIR, "model_cleaned_best.pth")
+info_path = os.path.join(BASE_DIR, "deployment_info.json")
 
 with open(info_path, 'r') as f:
     info = json.load(f)
