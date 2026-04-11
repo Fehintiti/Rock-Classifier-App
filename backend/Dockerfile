@@ -17,15 +17,20 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application files (no model yet)
+# Copy application files
 COPY main.py .
 COPY deployment_info.json .
 
-# Download model from S3 at container startup
-RUN aws s3 cp s3://rock-classifier-model/model_cleaned_best.pth /app/model_cleaned_best.pth --region us-east-1 --no-sign-request
+# Create startup script that downloads model then starts server
+RUN echo '#!/bin/bash\n\
+echo "Downloading model from S3..."\n\
+aws s3 cp s3://rock-classifier-model/model_cleaned_best.pth /app/model_cleaned_best.pth --region us-east-1\n\
+echo "Model downloaded! Starting server..."\n\
+exec uvicorn main:app --host 0.0.0.0 --port 8000\n\
+' > /app/start.sh && chmod +x /app/start.sh
 
 # Expose port
 EXPOSE 8000
 
-# Run application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run startup script
+CMD ["/app/start.sh"]
