@@ -2,19 +2,27 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies and AWS CLI
 RUN apt-get update && apt-get install -y \
     libgomp1 \
+    curl \
+    unzip \
+    && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+    && unzip awscliv2.zip \
+    && ./aws/install \
+    && rm -rf awscliv2.zip aws \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application files
+# Copy application files (no model yet)
 COPY main.py .
-COPY model_cleaned_best.pth .
 COPY deployment_info.json .
+
+# Download model from S3 at container startup
+RUN aws s3 cp s3://rock-classifier-model/model_cleaned_best.pth /app/model_cleaned_best.pth --region us-east-1 --no-sign-request
 
 # Expose port
 EXPOSE 8000
