@@ -86,7 +86,7 @@ function App() {
 
       // TEMPORARY: Use localhost for testing
       // After AWS deployment, change to: https://YOUR-AWS-URL/feedback
-      const response = await fetch('http://3.239.114.61:8000/predict', {
+      const response = await fetch('http://3.239.114.61:8000/feedback', {
         method: 'POST',
         body: formData,
       });
