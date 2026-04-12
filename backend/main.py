@@ -9,8 +9,6 @@ import json
 import io
 import os
 from datetime import datetime
-import pandas as pd
-
 app = FastAPI()
 
 app.add_middleware(
