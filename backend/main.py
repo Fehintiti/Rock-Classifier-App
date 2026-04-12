@@ -108,8 +108,7 @@ async def predict(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-if __name__ == "__main__":
-    @app.post("/feedback")
+@app.post("/feedback")
 async def submit_feedback(
     file: UploadFile = File(...),
     model_prediction_type: str = Form(...),
