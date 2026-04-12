@@ -109,5 +109,59 @@ async def predict(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
+    @app.post("/feedback")
+async def submit_feedback(
+    file: UploadFile = File(...),
+    model_prediction_type: str = Form(...),
+    model_prediction_name: str = Form(...),
+    user_correction_type: str = Form(...),
+    user_correction_name: str = Form(...),
+    certainty: str = Form(...)
+):
+    """Save user feedback for model improvement"""
+    try:
+        import boto3
+        import uuid
+        
+        # Generate unique ID
+        feedback_id = f"fb_{uuid.uuid4().hex[:12]}"
+        timestamp = datetime.now().isoformat()
+        
+        # Save image to S3
+        s3_client = boto3.client('s3')
+        image_data = await file.read()
+        s3_key = f"feedback/{timestamp.split('T')[0]}/{feedback_id}.jpg"
+        
+        s3_client.put_object(
+            Bucket='rock-classifier-feedback',
+            Key=s3_key,
+            Body=image_data
+        )
+        
+        # Save metadata to DynamoDB
+        dynamodb = boto3.resource('dynamodb')
+        table = dynamodb.Table('rock-classifier-feedback')
+        
+        table.put_item(Item={
+            'feedback_id': feedback_id,
+            'image_s3_path': f"s3://rock-classifier-feedback/{s3_key}",
+            'model_predicted_type': model_prediction_type,
+            'model_predicted_name': model_prediction_name,
+            'user_corrected_type': user_correction_type,
+            'user_corrected_name': user_correction_name,
+            'certainty': certainty,
+            'timestamp': timestamp
+        })
+        
+        return {
+            "success": True,
+            "message": "Thank you! Your feedback helps improve the model.",
+            "feedback_id": feedback_id
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
