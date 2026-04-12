@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile, HTTPException, Form
+from fastapi import FastAPI, File, UploadFile, HTTPException, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import torch
 import torch.nn as nn
@@ -15,7 +15,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["https://fehintiti.github.io"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
