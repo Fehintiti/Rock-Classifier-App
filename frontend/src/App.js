@@ -86,7 +86,7 @@ function App() {
 
       // TEMPORARY: Use localhost for testing
       // After AWS deployment, change to: https://YOUR-AWS-URL/feedback
-      const response = await fetch('https://d1k7a198oxxag2.cloudfront.net', {
+      const response = await fetch('https://d1k7a198oxxag2.cloudfront.net/feedback', {
         method: 'POST',
         body: formData,
       });
