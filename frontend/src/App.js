@@ -45,30 +45,22 @@ function App() {
 
   const classifyRock = async () => {
     if (!selectedFile) return;
-
     setLoading(true);
-
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
-
-      // TEMPORARY: Use localhost for testing
-      // After AWS deployment, change to: https://YOUR-AWS-URL/predict
       const response = await fetch('https://d1k7a198oxxag2.cloudfront.net/predict', {
         method: 'POST',
         body: formData,
       });
-
       if (!response.ok) {
         throw new Error('Classification failed');
       }
-
       const data = await response.json();
       setResult(data);
-
     } catch (error) {
       console.error('Error:', error);
-      alert('Error classifying rock. Make sure the backend is running on http://localhost:8000');
+      alert('Error classifying rock. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -84,24 +76,19 @@ function App() {
       formData.append('user_correction_name', actualRock === 'other' ? customRock : actualRock);
       formData.append('certainty', certainty);
 
-      // TEMPORARY: Use localhost for testing
-      // After AWS deployment, change to: https://YOUR-AWS-URL/feedback
       const response = await fetch('https://d1k7a198oxxag2.cloudfront.net/feedback', {
         method: 'POST',
         body: formData,
       });
-
       if (!response.ok) {
         throw new Error('Feedback submission failed');
       }
-
       const data = await response.json();
       console.log('Feedback saved:', data);
       setFeedbackSubmitted(true);
-
     } catch (error) {
       console.error('Error submitting feedback:', error);
-      alert('Error submitting feedback. Make sure the backend is running!');
+      alert('Error submitting feedback. Please try again.');
     }
   };
 
@@ -110,7 +97,8 @@ function App() {
     'Slate', 'Quartzite', 'Gneiss', 'Schist', 'Shale',
     'Diorite', 'Gabbro', 'Andesite', 'Rhyolite', 'Pumice',
     'Obsidian', 'Dolomite', 'Conglomerate', 'Breccia', 'Siltstone',
-    'Phyllite', 'Migmatite', 'Granodiorite', 'Peridotite', 'Amphibolite'
+    'Phyllite', 'Migmatite', 'Granodiorite', 'Peridotite', 'Amphibolite',
+    'Pegmatite', 'Tuff', 'Chert', 'Coal', 'Gypsum', 'Halite',
   ];
 
   return (
@@ -306,6 +294,7 @@ function App() {
                         />
                       )}
                     </div>
+
                     <div className="feedback-question">
                       <label>How certain are you about this correction?</label>
                       <div className="radio-group">
@@ -341,16 +330,16 @@ function App() {
                         </label>
                       </div>
                     </div>
+
+                    <button
+                      className="submit-feedback-btn"
+                      onClick={submitFeedback}
+                      disabled={feedbackSubmitted || !correctRockGroup || !actualRock || !certainty || (actualRock === 'other' && !customRock)}
+                    >
+                      {feedbackSubmitted ? '✓ Feedback Submitted' : 'Submit Feedback'}
+                    </button>
                   </>
                 )}
-
-                <button
-                  className="submit-feedback-btn"
-                  onClick={submitFeedback}
-                  disabled={feedbackSubmitted || (isCorrect === 'no' && (!correctRockGroup || !actualRock || !certainty)) || (actualRock === 'other' && !customRock)}
-                >
-                  {feedbackSubmitted ? '✓ Feedback Submitted' : 'Submit Feedback'}
-                </button>
               </div>
             </div>
           </div>
