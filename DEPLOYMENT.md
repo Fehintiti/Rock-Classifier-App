@@ -72,6 +72,7 @@ gcloud iam workload-identity-pools providers create-oidc "github-provider" \
   --workload-identity-pool="github-pool" \
   --display-name="GitHub provider" \
   --attribute-mapping="google.subject=assertion.sub,attribute.repository=assertion.repository" \
+  --attribute-condition="assertion.repository == '${REPO}'" \
   --issuer-uri="https://token.actions.githubusercontent.com"
 
 # 4. Let only THIS repo impersonate the deploy service account
