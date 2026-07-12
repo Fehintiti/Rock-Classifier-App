@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import './App.css';
 
+// Set this to your deployed Cloud Run URL after running the backend deploy
+// (see DEPLOYMENT.md). Example: https://rock-classifier-abc123-uc.a.run.app
+const API_BASE_URL = 'https://YOUR-CLOUD-RUN-URL.run.app';
+
 function App() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -49,7 +53,7 @@ function App() {
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
-      const response = await fetch('https://d1k7a198oxxag2.cloudfront.net/predict', {
+      const response = await fetch(`${API_BASE_URL}/predict`, {
         method: 'POST',
         body: formData,
       });
@@ -76,7 +80,7 @@ function App() {
       formData.append('user_correction_name', actualRock === 'other' ? customRock : actualRock);
       formData.append('certainty', certainty);
 
-      const response = await fetch('https://d1k7a198oxxag2.cloudfront.net/feedback', {
+      const response = await fetch(`${API_BASE_URL}/feedback`, {
         method: 'POST',
         body: formData,
       });
@@ -330,16 +334,16 @@ function App() {
                         </label>
                       </div>
                     </div>
-
-                    <button
-                      className="submit-feedback-btn"
-                      onClick={submitFeedback}
-                      disabled={feedbackSubmitted || !correctRockGroup || !actualRock || !certainty || (actualRock === 'other' && !customRock)}
-                    >
-                      {feedbackSubmitted ? '✓ Feedback Submitted' : 'Submit Feedback'}
-                    </button>
                   </>
                 )}
+
+                <button
+                  className="submit-feedback-btn"
+                  onClick={submitFeedback}
+                  disabled={feedbackSubmitted || (isCorrect === 'no' && (!correctRockGroup || !actualRock || !certainty || (actualRock === 'other' && !customRock)))}
+                >
+                  {feedbackSubmitted ? '✓ Feedback Submitted' : 'Submit Feedback'}
+                </button>
               </div>
             </div>
           </div>

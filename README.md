@@ -3,7 +3,7 @@
 An AI-powered tool for field rock identification using deep learning.
 
 ## 🎯 Try it Live
-**Coming Soon!** ← (You'll add link after deployment)
+**[fehintiti.github.io/Rock-Classifier-App](https://fehintiti.github.io/Rock-Classifier-App/)**
 
 ## 📊 Project Overview
 - **Model:** ConvNeXt-Tiny CNN with hierarchical classification
@@ -28,9 +28,14 @@ An AI-powered tool for field rock identification using deep learning.
 
 ## 🛠️ Tech Stack
 - **Deep Learning:** PyTorch, ConvNeXt-Tiny
-- **Web App:** Streamlit
+- **Backend:** FastAPI, deployed on Google Cloud Run (scale-to-zero)
+- **Frontend:** React, deployed on GitHub Pages
+- **Feedback Storage:** Supabase (Postgres + Storage), for future retraining
+- **CI/CD:** GitHub Actions (auto-deploy to Cloud Run on backend changes)
 - **Training:** Google Colab (NVIDIA L4 GPU)
 - **Dataset Source:** Kaggle Rock Classification Dataset
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for how the backend and feedback storage are set up and deployed.
 
 ## 📖 Read More
 - **Technical Article:** [Coming Soon]
@@ -40,7 +45,7 @@ An AI-powered tool for field rock identification using deep learning.
 This is a personal research project demonstrating AI applications in geology. Not intended for professional geological identification. Always confirm predictions with field tests.
 
 ## 🙋‍♂️ About
-Built by [Your Name] - Data Geoscientist
+Built by Tomisin Okunlola
 
 ## 📄 License
 MIT License - Feel free to use for educational purposes
