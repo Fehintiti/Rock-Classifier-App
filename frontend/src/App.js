@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 
-// Set this to your deployed Cloud Run URL after running the backend deploy
-// (see DEPLOYMENT.md). Example: https://rock-classifier-abc123-uc.a.run.app
-const API_BASE_URL = 'https://YOUR-CLOUD-RUN-URL.run.app';
+const API_BASE_URL = 'https://rock-classifier-405058999329.us-central1.run.app';
 
 function App() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -72,13 +70,18 @@ function App() {
 
   const submitFeedback = async () => {
     try {
+      const predictedType = result?.l1_class || '';
+      const predictedName = result?.l2_predictions[0]?.rock_type || '';
+
       const formData = new FormData();
       formData.append('file', selectedFile);
-      formData.append('model_prediction_type', result?.l1_class || '');
-      formData.append('model_prediction_name', result?.l2_predictions[0]?.rock_type || '');
-      formData.append('user_correction_type', correctRockGroup);
-      formData.append('user_correction_name', actualRock === 'other' ? customRock : actualRock);
-      formData.append('certainty', certainty);
+      formData.append('model_prediction_type', predictedType);
+      formData.append('model_prediction_name', predictedName);
+      // When the prediction is confirmed correct, the "correction" is just
+      // the prediction itself, confirmed — not a blank field.
+      formData.append('user_correction_type', isCorrect === 'yes' ? predictedType : correctRockGroup);
+      formData.append('user_correction_name', isCorrect === 'yes' ? predictedName : (actualRock === 'other' ? customRock : actualRock));
+      formData.append('certainty', isCorrect === 'yes' ? 'very_certain' : certainty);
 
       const response = await fetch(`${API_BASE_URL}/feedback`, {
         method: 'POST',
