@@ -428,6 +428,23 @@ body {
   cursor: not-allowed;
 }
 
+.feedback-thanks {
+  background: #FAF7F2;
+  border: 1px solid #D4A373;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  color: #3E2C24;
+  font-family: 'Helvetica Neue', Helvetica, Arial, Roboto, sans-serif;
+  font-style: italic;
+  font-weight: 500;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* Custom rock input */
 .custom-rock-input {
   width: 100%;

@@ -347,6 +347,12 @@ function App() {
                 >
                   {feedbackSubmitted ? '✓ Feedback Submitted' : 'Submit Feedback'}
                 </button>
+
+                {feedbackSubmitted && (
+                  <div className="feedback-thanks">
+                    Thanks — your feedback has been saved and will help improve the model.
+                  </div>
+                )}
               </div>
             </div>
           </div>
